@@ -1,5 +1,5 @@
 Create SQL back -> sql_dbbackup_script.sh
-  1-> clone first 
+  1-> clone first <br>
   2-> go to file path 
   3-> sudo nano ./sql_dbbackup_script.sh
   4-> edit (MYSQL_USER="root" & MYSQL_PASSWORD="") according to you sql preference and save it
