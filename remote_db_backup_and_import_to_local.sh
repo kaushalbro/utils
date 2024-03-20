@@ -21,6 +21,9 @@ isInstalled(){
 isInstalled "sshpass"
 isInstalled "whiptail"
 
+danger="\033[0;31m"
+done="\033[0;32m"
+warning="\033[0;33m"
 prompt_input() {
     local prompt="$1"
     whiptail --inputbox "$prompt" 10 70 3>&1 1>&2 2>&3;
@@ -50,8 +53,8 @@ function ask_schemaName_create_and_import(){
     if [ $? -ne 0 ]; then
         echo " "
         echo " "       
-        echo "  $db_name import canceled."
-        echo "  Db "$db_name".sql backup successfully.."  ;       
+        echo -e "${danger} $db_name import canceled."
+        echo -e "${done}  Db "$db_name".sql backup successfully.."  ;       
         echo " "
         echo " " 
         echo "0"
@@ -59,15 +62,15 @@ function ask_schemaName_create_and_import(){
     fi   
     is_schema_exist=$(check_schema_existence "$LOCAL_SQL_USER" "$LOCAL_SQL_PASSWORD" "$schema_name")
     if [ "$is_schema_exist" -eq 1 ]; then
-        prompt_yesno "Schema $schema_name  already Exist in local. \nDo you want to override it ?"
+        prompt_yesno "Schema $schema_name  already exist in local. \nDo you want to override it ?"
         can_override_db=$?
         if [ "$can_override_db" -eq 0 ]; then    
             drop_schema "$LOCAL_SQL_USER" "$LOCAL_SQL_PASSWORD" "$schema_name";
             create_schema "$LOCAL_SQL_USER" "$LOCAL_SQL_PASSWORD" "$schema_name";
             echo " "
             echo " "       
-            echo "      Database is Importing from remote to local please wait...."  ;
-            echo "      Time depends upon the size of remote database and performance of local server...."  ;              
+            echo -e "${warning}  Database is Importing from remote to local please wait...."  ;
+            echo -e "${warning}  Time depends upon the size of remote database and performance of local server...."  ;              
             echo " "
             echo " " 
             import_database "$LOCAL_SQL_USER" "$LOCAL_SQL_PASSWORD" "$schema_name" "$new_dbname";
@@ -80,9 +83,9 @@ function ask_schemaName_create_and_import(){
        create_schema "$LOCAL_SQL_USER" "$LOCAL_SQL_PASSWORD" "$schema_name";
        echo " "
        echo " "       
-       echo "      Database is Importing from remote to local please wait...."  ;
+       echo -e "${warning}  Database is Importing from remote to local please wait...."  ;
        echo " "
-       echo "      Time depends upon the size of remote database and performance of local server...."  ;              
+       echo -e "${warning}  Time depends upon the size of remote database and performance of local server...."  ;               
        echo " "
        echo " " 
        import_database "$LOCAL_SQL_USER" "$LOCAL_SQL_PASSWORD" "$schema_name" "$new_dbname";
@@ -97,7 +100,7 @@ import_database(){
     mysql -u "$mysql_user" -p"$mysql_password"  $schema_name < ./$file_path 
     echo " "
     echo " " 
-    echo ""$db_name".sql imported successfully from remote to local database with Schema name: $schema_name"  ;   
+    echo -e "${done} "$db_name".sql imported successfully from remote to local database with Schema name: $schema_name"  ;   
     echo " "
     echo " " 
 }
@@ -120,7 +123,7 @@ current_time=$(date +"%Y-%m-%d-%H:%M:%S");
 echo " ";
 echo " ";
 echo " ";
-echo "db is downloading from remote server please wait ..........";
+echo -e "${warning}db is downloading from remote server please wait ..........";
 echo " ";
 echo " ";
 echo " ";
@@ -130,12 +133,12 @@ echo " "
 echo " "
 userInput=$(prompt_input "Enter new database file Name (Empty means backup cancelled.):")
 if [ $? -ne 0 ]; then
-    echo "Backup canceled."
+    echo -e "${danger}Backup canceled."
     exit 0
 fi
 if [ -z "$userInput" ]; then
     rm ./backup_db.sql
-    echo "Backup is cancelled.."
+    echo -e "${danger}Backup is cancelled.."
     exit 0
 else
     db_name="${userInput// /_}-$current_time"
@@ -148,7 +151,7 @@ else
         ask_schemaName_create_and_import "$new_dbname";
         exit 0;
     else 
-        echo "Db $db_name.sql backup successfully.." ;   
+        echo -e "${done}Db $db_name.sql backup successfully.." ;   
         exit 0
     fi
 fi
