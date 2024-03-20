@@ -124,8 +124,8 @@ echo "db is downloading from remote server please wait ..........";
 echo " ";
 echo " ";
 echo " ";
-sshpass -p "$REMOTE_SSH_PASSWORD" scp "$REMOTE_SSH_USER"@"$REMOTE_SSH_HOST":/home/sudeep/backup_db.sql ./  ;
-sshpass -p "$REMOTE_SSH_PASSWORD" ssh "$REMOTE_SSH_USER"@"$REMOTE_SSH_HOST" -t "rm /home/sudeep/backup_db.sql  && exit ; bash";
+sshpass -p "$REMOTE_SSH_PASSWORD" scp "$REMOTE_SSH_USER"@"$REMOTE_SSH_HOST":/home/$REMOTE_SSH_USER/backup_db.sql ./  ;
+sshpass -p "$REMOTE_SSH_PASSWORD" ssh "$REMOTE_SSH_USER"@"$REMOTE_SSH_HOST" -t "rm /home/$REMOTE_SSH_USER/backup_db.sql  && exit ; bash";
 echo " "
 echo " "
 userInput=$(prompt_input "Enter new database file Name (Empty means backup cancelled.):")
